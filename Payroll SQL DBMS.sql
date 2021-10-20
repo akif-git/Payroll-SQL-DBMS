@@ -109,7 +109,7 @@ insert into locations values(15, '32 York St', NULL, NULL, '12 Dundas St');
 
 insert into payroll values (2, 5000000.69, 2000000.43, 'Certified Cheque', 'Payed On time');
 insert into payment values (11, 2,1200.23, 100.00, 0, 200.00, 0);
-insert into login values ('johndoe@gmail.com', '!Password274', 'JohnDoe', 'What was your first petâ€™s name?', 'Draco');
+insert into login values ('johndoe@gmail.com', '!Password274', 'JohnDoe', 'What was your first pet’s name?', 'Draco');
 insert into department values (20, 235, 'Software Department', 'Andrew Ng');
 insert into employee values (130, 11, 20, 'johndoe@gmail.com','John Doe',100000.00,'2021-08-05');
 insert into dependant values (130, '1954-03-21', 126, 'Bayview', 'MK5 T3B', 'Toronto', 'Canada');
