@@ -1,0 +1,401 @@
+CREATE TABLE payroll(
+    PAYROLL_ID INT PRIMARY KEY,
+    TotalCompanyRevenue FLOAT,
+    PayrollType VARCHAR2(20),
+    PayrollDesc VARCHAR2(100)
+);
+
+CREATE TABLE revenue(
+    TotalCompanyRevenue FLOAT PRIMARY KEY,
+    PaymentBudget FLOAT
+);
+
+CREATE TABLE payment(
+    PAY_ID INT PRIMARY KEY,
+    PAYROLL_ID_FOREIGN INT,
+    BiWeeklySalary FLOAT,
+    OvertimeAmount FLOAT,
+    Claimable_Expenses FLOAT,
+    VacationPay FLOAT,
+    BonusAndComissions FLOAT,
+    FOREIGN KEY(PAYROLL_ID_FOREIGN)
+        REFERENCES payroll(PAYROLL_ID) ON DELETE CASCADE 
+);
+
+CREATE TABLE department(
+    DEPARTMENT_ID INT PRIMARY KEY,
+    NumberOfEmployees INT NOT NULL,
+    DEP_NAME VARCHAR2(20),
+    DEP_MANAGER VARCHAR2(20)
+);
+
+CREATE TABLE login(
+    EMAIL VARCHAR(35) PRIMARY KEY,
+    Password1 VARCHAR2(20),
+    Username VARCHAR2(12),
+    Seq_questions VARCHAR(600),
+    Answers VARCHAR(30)
+);
+
+CREATE TABLE lower_level_employee(
+    EMAIL VARCHAR(35) PRIMARY KEY REFERENCES login(EMAIL),
+    RestrictedAccess int
+);
+CREATE TABLE manager(
+    EMAIL VARCHAR(35) PRIMARY KEY REFERENCES login(EMAIL),
+    ViewDownAccess int
+);
+CREATE TABLE HR(
+    EMAIL VARCHAR(35) PRIMARY KEY REFERENCES login(EMAIL),
+    SuperAccess int
+);
+
+CREATE TABLE employee(
+		EMP_ID	INT PRIMARY KEY,
+        PAY_ID_FOREIGN INT,
+        DEPT_ID_FOREIGN INT,
+        EMAIL_FOREIGN VARCHAR(35),
+		E_Name	VARCHAR2(20),
+		E_Salary FLOAT,
+        Pay_Date DATE,
+        FOREIGN KEY (PAY_ID_FOREIGN)
+            REFERENCES payment(PAY_ID) ON DELETE CASCADE,
+        FOREIGN KEY (DEPT_ID_FOREIGN)
+            REFERENCES department(DEPARTMENT_ID) ON DELETE CASCADE,
+        FOREIGN KEY (EMAIL_FOREIGN) 
+            REFERENCES login(email) ON DELETE CASCADE
+);
+
+
+CREATE TABLE parttime(
+    EMP_ID INT REFERENCES employee(EMP_ID),
+    HourlyRate FLOAT,
+    Type VARCHAR(20),
+    PRIMARY KEY(EMP_ID)
+);
+CREATE TABLE fulltime(
+    EMP_ID INT REFERENCES employee(EMP_ID),
+    MonthlyRate FLOAT,
+    PRIMARY KEY(EMP_ID)
+);
+
+Create TABLE locations(
+    DEPARTMENT_ID INT PRIMARY KEY REFERENCES department(DEPARTMENT_ID),
+    West_Department VARCHAR2(20),
+    East_Department VARCHAR2(20),
+    North_Department VARCHAR2(20),
+    South_Department VARCHAR2(20)
+);
+
+CREATE TABLE dependant(
+    EMP_ID INT REFERENCES employee(EMP_ID),
+    Birthdate DATE,
+    StreetNumber INT,
+    StreetName VARCHAR(20),
+    PostalCode VARCHAR(20),
+    City VARCHAR(20),
+    Country VARCHAR(20),
+    PRIMARY KEY(EMP_ID)
+);
+
+
+/*Populating the database */
+insert into payroll values (1, 5000000.69, 2000000.43, 'Direct Deposit', 'Payed On time');
+insert into payment values (10, 1, 876.27, 87.3, 0, 0, 0);
+insert into login values ('billybob@gmail.com', 'Billybob123', 'BillyBob', 'What was your first car?', '1992 Corolla');
+insert into department values (15, 235, 'Software Department', 'Andrew Ng');
+insert into employee values (111, 10, 15, 'billybob@gmail.com','Billy Bob',50000.00,'2021-08-05');
+insert into dependant values (111, '2000-08-18', 62, 'Dundas', 'H7Z P0Q', 'Toronto', 'Canada');
+insert into fulltime values(111, 4166.67);
+insert into locations values(15, '32 York St', NULL, NULL, '12 Dundas St');
+
+insert into payroll values (2, 5000000.69, 2000000.43, 'Certified Cheque', 'Payed On time');
+insert into payment values (11, 2,1200.23, 100.00, 0, 200.00, 0);
+insert into login values ('johndoe@gmail.com', '!Password274', 'JohnDoe', 'What was your first pet’s name?', 'Draco');
+insert into department values (20, 235, 'Software Department', 'Andrew Ng');
+insert into employee values (130, 11, 20, 'johndoe@gmail.com','John Doe',100000.00,'2021-08-05');
+insert into dependant values (130, '1954-03-21', 126, 'Bayview', 'MK5 T3B', 'Toronto', 'Canada');
+insert into fulltime values(130, 8333.33);
+insert into locations values(20, '32 York St', NULL, NULL, '12 Dundas St');
+
+insert into payroll values (3, 5000000.69, 1000000.43, 'Direct Deposit', 'Payed On time');
+insert into payment values (13,3,1100.06, 0, 0, 0, 0);
+insert into login values ('robertsmith@gmail.com', 'Derozan4life', 'RobertSmith', 'In what city did your parents meet?', 'Paris');
+insert into department values (25, 180, 'Law Department', 'Robert Kardashian');
+insert into employee values (140,13, 25, 'robertsmith@gmail.com','Robert Smith',800000.00,'2021-08-05');
+insert into dependant values (140, '1972-04-20', 456, 'Kennedy', 'MK5 L6N', 'Toronto', 'Canada');
+insert into fulltime values(140, 6666.67);
+insert into locations values(25, '32 York St', NULL, NULL,NULL);
+
+insert into payroll values (6, 5000000.69, 500000.67, 'Direct Deposit', 'Payed On time');
+insert into payment values (15,6,1300.00, 35.55, 71.22, 735.60, 14.02);
+insert into login values ('tommylee@gmail.com', '!Sharklover47', 'TommyLee', 'Who did you take to prom?', 'Jessica');
+insert into department values (35, 12, 'HR Department', 'Victoria Willow');
+insert into employee values (160,15, 35, 'tommylee@gmail.com','TommyLee',470000.00,'2021-08-05');
+insert into dependant values (160, '1991-12-25', 61, 'Crowchild', 'T1Y 1A7', 'Calgary', 'Canada');
+insert into fulltime values(160, 3916.67);
+insert into locations values(35, NULL, NULL, NULL, '12 Dundas St');
+
+insert into payroll values (4, 5000000.69, 2000000.43, 'Cash', 'Payed  Late');
+insert into payment values (12, 4, 450.75, 20.25, 0, 0, 0);
+insert into login values ('kaylierodgers@gmail.com', 'kaylirodgers123', 'KayliRodgers', 'What city were you born in?', 'Toronto');
+insert into department values (10, 235, 'Cleaning Department', 'Rachel Davis');
+insert into employee values (120, 12, 10, 'kaylierodgers@gmail.com','kaylie',25000.00,'2021-08-05');
+insert into dependant values (120, '1984-06-20', 05, 'George Street', 'P3D P3W', 'Toronto', 'Canada');
+insert into parttime values(120, 12.82, 'Intern');
+insert into locations values(10, NULL,  '20 Eagle Ave', NULL, '50 King St');
+
+
+
+insert into payroll values (5, 5000000.69, 2000000.43, 'Certified Cheque', 'Payed On time');
+insert into payment values (14, 5, 3200.00,110.00, 300.00, 600.00, 10000.00);
+insert into login values ('stevenadams@gmail.com', 'Stevenadams123', 'StevenAdams', 'Favorite basketball team?', 'OKC Thunder');
+insert into department values (40, 300, 'Finance Department', 'Josh Albert');
+insert into employee values (150, 14, 40, 'stevenadams@gmail.com','Stevens Adams',120000.00,'2021-08-05');
+insert into dependant values (150, '1998-03-05', 09, 'Sky Drive', 'G9J 10Q', 'Vancouver', 'Canada');
+insert into fulltime values(150, 10000.00);
+insert into locations values(40,NULL, NULL, NULL, '12 Dundas St');
+
+
+insert into payroll values (7, 5000000.69, 2000000.43, 'Direct Deposit', 'Payed On time');
+insert into payment values (30, 7, 2200.00, 94.87, 0, 0, 0);
+insert into login values ('JakePaul@gmail.com', 'JakePaul123', 'JakePaul', 'Favorite high school teacher?', 'Mr. Josh');
+insert into department values (18, 235, 'Software Department', 'Andrew Ng');
+insert into employee values (141, 10, 18, 'JakePaul@gmail.com','Jake Paul',52800.00,'2021-08-05');
+insert into dependant values (141, '2000-01-12', 32, 'Queen Street', 'J8F P0Q', 'Toronto', 'Canada');
+insert into fulltime values(141, 4400.00);
+insert into locations values(18, '32 York St', NULL, NULL, '12 Dundas St');
+
+
+/*
+SIMPLE QUERIES
+*/
+
+SELECT *
+FROM employee;
+
+SELECT E_name, 'has an employee ID of ', EMP_ID
+FROM employee;
+
+SELECT * 
+FROM employee
+WHERE E_Salary >= 20000
+ORDER BY E_Salary DESC;
+
+SELECT * 
+FROM fulltime
+WHERE
+MONTHLYRATE < 10000
+AND EMP_ID > 150;
+
+/*DROP FUNCTIONS */
+DROP TABLE LOCATIONS;
+DROP TABLE fulltime;
+DROP TABLE parttime;
+DROP TABLE lower_level_employee;
+DROP TABLE manager;
+DROP TABLE HR;
+DROP TABLE dependant;
+DROP TABLE employee;
+DROP TABLE payment;
+DROP TABLE department;
+DROP TABLE payroll;
+DROP TABLE login;
+
+
+CREATE VIEW EMPLOYEE_VIEW AS
+SELECT *
+FROM employee;
+
+DROP VIEW EMPLOYEE_VIEW;
+
+
+/*------------------------ASSIGNMENT 4: 7-8 SIMPLE QUERIES------------------------------------------------------------------ */
+
+SELECT *
+FROM employee;
+
+SELECT E_name, 'has an employee ID of ', EMP_ID
+FROM employee;
+
+SELECT * 
+FROM employee
+WHERE E_Salary >= 20000
+ORDER BY E_Salary DESC;
+
+SELECT * 
+FROM fulltime
+WHERE
+MONTHLYRATE < 10000
+AND EMP_ID > 150;
+
+SELECT dependant.birthdate FROM dependant
+ORDER by birthdate desc;
+
+SELECT E_name, sum(EMP_ID)
+FROM employee
+GROUP BY E_name;
+
+SELECT DEP_NAME, COUNT(NumberOfEmployees)
+FROM department
+GROUP BY DEP_NAME;
+
+SELECT * FROM EMPLOYEE_VIEW;
+
+
+SELECT DISTINCT city FROM DEPENDANT;
+
+SELECT COUNT(DISTINCT city) FROM DEPENDANT;
+
+SELECT DISTINCT south_department FROM locations;
+
+SELECT DISTINCT COUNT(south_department) FROM locations;
+
+SELECT DISTINCT birthdate FROM dependant;
+
+SELECT DISTINCT COUNT(birthdate) FROM dependant;
+
+/* Inner join relatonship between employee id, payment id and their corresponding biweekly salary */
+SELECT employee.EMP_ID, payment.PAY_ID, payment.BiWeeklySalary
+FROM employee
+INNER JOIN payment ON employee.pay_id_foreign=payment.pay_id;
+
+/* Display employees names and birthday oldest to youngest */
+SELECT employee.E_name, dependant.birthdate 
+FROM employee
+INNER JOIN dependant ON employee.EMP_ID=dependant.emp_id
+ORDER BY dependant.birthdate asc;
+
+/*Display the city of all the employee's who make over 100k */
+SELECT  employee.E_name, employee.E_salary, dependant.city
+FROM   employee
+INNER JOIN dependant ON employee.EMP_ID=dependant.emp_id
+WHERE employee.E_salary > 100000
+ORDER BY employee.e_salary asc;
+
+/*--------------------------------------------------------------------------------------------------- */
+
+insert into payroll values (9, 3000000.69, 4000000.43, 'Cash', 'Payed  Late');
+insert into payment values (33, 9, 450.75, 20.25, 0, 0, 0);
+insert into login values ('kayrodgers1@gmail.com', 'karodgers1234', 'KRodgers5', 'What city were you born in?', 'Toronto');
+insert into department values (99, 255, 'Cleaning Department', 'Rachel Davis');
+insert into employee values (121, 33, 99, 'kayrodgers1@gmail.com','kaylie',25000.00,'2021-08-05');
+insert into dependant values (121, '1984-06-20', 05, 'George Street', 'P3D P3W', 'Toronto', 'Canada');
+insert into parttime values(121, 12.82, 'Intern');
+insert into locations values(99, NULL,  '20 Eagle Ave', NULL, '12 Dundas St');
+
+
+/*------------------------------A4 PT 2, A5, A6------------------------------------------------ */
+
+/* A4 Pt 2 ------------------------------------------------------------------------------------------*/
+CREATE VIEW potential_Manager(M_EmpID, M_Name, M_Salary) AS
+(SELECT EMP_ID, E_name, E_Salary
+FROM employee
+where E_Salary > 700000);
+
+SELECT * FROM potential_Manager;
+
+CREATE VIEW West_Locations AS
+(SELECT West_Department
+FROM locations);
+
+SELECT * FROM West_Locations;
+
+SELECT DISTINCT city FROM DEPENDANT;
+
+SELECT COUNT(DISTINCT city) FROM DEPENDANT;
+
+/*Inner join between employee id and department employee id to display all employees in toronto */
+SELECT e.EMP_ID, E_name
+FROM dependant d, employee e
+WHERE City = 'Toronto'
+AND d.EMP_ID = e.EMP_ID
+ORDER BY EMP_ID;
+
+/* Inner join relatonship between employee id, payment id and their corresponding biweekly salary */
+SELECT employee.EMP_ID, payment.PAY_ID, payment.BiWeeklySalary
+FROM employee
+INNER JOIN payment ON employee.pay_id_foreign=payment.pay_id;
+
+/* Display employees names and birthday oldest to youngest */
+SELECT employee.E_name, dependant.birthdate 
+FROM employee
+INNER JOIN dependant ON employee.EMP_ID=dependant.emp_id
+ORDER BY dependant.birthdate asc;
+
+/*Display the city of all the employee's who make over 100k */
+SELECT  employee.E_name, employee.E_salary, dependant.city
+FROM   employee
+INNER JOIN dependant ON employee.EMP_ID=dependant.emp_id
+WHERE employee.E_salary > 100000
+ORDER BY employee.e_salary asc;
+
+/*List each department and its number of employees using the group by function */
+SELECT DEP_NAME, COUNT(NumberOfEmployees)
+FROM department
+GROUP BY DEP_NAME;
+
+
+/* A5 Advanced Queries------------------------------------------------------ */
+
+/*list all employees who are fulltime AND make more than 1000 a month AND are from toronto AND are older than 1990 */
+SELECT e.EMP_ID, E_name
+FROM employee e
+WHERE EXISTS
+(SELECT d.EMP_ID, f.EMP_ID
+FROM fulltime f, dependant d
+WHERE d.City = 'Toronto'
+AND d.Birthdate < '1990-04-01'
+AND f.MonthlyRate > 1000
+AND e.EMP_ID = d.EMP_ID
+AND e.EMP_ID = f.EMP_ID);
+
+/*List all department managers where the number of employees is greater than 100 AND they are NOT managing at 12 Dundas St */
+SELECT DEP_NAME, DEP_MANAGER
+FROM department d
+WHERE NumberOfEmployees > 100
+AND NOT EXISTS
+(SELECT West_Department
+FROM locations l
+WHERE l.South_Department = '12 Dundas St'
+AND d.DEPARTMENT_ID = l.DEPARTMENT_ID);
+
+/*List ALL payroll id's which were not done through direct deposit OR done through cash AND the biweekly salary for these were under 10k */
+SELECT PAYROLL_ID, PayrollType, PayrollDesc
+FROM payroll p
+WHERE p.PayrollType <> 'Direct Deposit'
+AND NOT EXISTS
+(SELECT BiWeeklySalary
+FROM payment x
+WHERE BiWeeklySalary > 10000
+AND p.PAYROLL_ID = x.PAYROLL_ID_FOREIGN)
+UNION
+(SELECT PAYROLL_ID, PayrollType, PayrollDesc
+FROM payroll q
+WHERE q.PayrollType = 'Cash'
+AND NOT EXISTS
+(SELECT BiWeeklySalary
+FROM payment x
+WHERE BiWeeklySalary > 10000
+AND q.PAYROLL_ID = x.payroll_id_foreign
+));
+
+/*Salaries between 100k and 400k */
+SELECT E_Name, E_Salary
+FROM employee p 
+WHERE p.E_Salary < 100000
+UNION
+(SELECT E_Name, E_Salary
+FROM employee s
+WHERE s.E_Salary > 400000);
+
+
+/*Find the average salary of all employees */
+SELECT 'Average, Min, max salary is: ', AVG(E_Salary), MIN(E_Salary), MAX(E_Salary)
+FROM employee;
+
+
+
+
+
+
